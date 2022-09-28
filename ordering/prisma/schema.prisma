@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model orders{
+     id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+     orderNumber String @map("order_number")
+     items Json
+     grandTotal Decimal @map("grand_total")
+     status OrderStatus
+     createdBy String @map("created_by")
+     createdAt DateTime @default(now()) @map("created_at")
+     updatedBy String? @map("updated_by")
+     updatedAt DateTime? @map("updated_at")
+
+     @@unique([orderNumber], name: "orderNumberIdentifier")
+}
+
+enum OrderStatus {
+    PROCESSING
+    PAID
+    CANCELLED
+    PAYMENT_FAILED
+    COMPLETED
+}
