@@ -15,6 +15,10 @@ router.patch('/api/orders/:orderId/cancel', async (req, res) => {
 
         if (!order)
             res.status(400).send('Order not found.');
+        
+        const userId = req.user?.id;
+        if(order.createdBy != userId)
+            res.status(401).send('Unauthorized.');
 
         if (order?.status != "PROCESSING")
             res.status(400).send('Order status must be PROCESSING.');
